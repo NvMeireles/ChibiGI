@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Diário de Estudos 📚</title>
+<link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rosa: #FF6B9D;
+    --rosa-light: #FFD6E8;
+    --rosa-dark: #C44B77;
+    --lilas: #C084FC;
+    --lilas-light: #F3E8FF;
+    --amarelo: #FCD34D;
+    --verde: #34D399;
+    --verde-light: #D1FAE5;
+    --vermelho: #F87171;
+    --vermelho-light: #FEE2E2;
+    --laranja: #FB923C;
+    --azul: #60A5FA;
+    --bg: #FFF5F8;
+    --card: #FFFFFF;
+    --text: #3D1A2E;
+    --text-muted: #9D7A8A;
+    --border: #F0C4D8;
+    --shadow: 0 4px 20px rgba(255,107,157,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    background-image: 
+      radial-gradient(circle at 10% 20%, rgba(255,107,157,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 90% 80%, rgba(192,132,252,0.08) 0%, transparent 50%);
+  }
+
+  header {
+    background: linear-gradient(135deg, #FF6B9D 0%, #C084FC 100%);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(ellipse at center, rgba(255,255,255,0.1) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  header h1 {
+    font-family: 'Pacifico', cursive;
+    font-size: 2rem;
+    color: white;
+    text-shadow: 2px 3px 0px rgba(0,0,0,0.15);
+    letter-spacing: 1px;
+  }
+  header p {
+    color: rgba(255,255,255,0.9);
+    font-size: 0.95rem;
+    margin-top: 0.3rem;
+    font-weight: 600;
+  }
+
+  .container { max-width: 820px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+  .mood-banner {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 2px solid var(--border);
+    box-shadow: var(--shadow);
+    text-align: center;
+    transition: all 0.4s ease;
+  }
+  .mood-emoji { display: block; margin-bottom: 0.5rem; animation: bounce 2s infinite; }
+  .mood-emoji img { width: 120px; height: 120px; object-fit: contain; }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .mood-message { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+  .mood-sub { font-size: 0.9rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+  .tabs {
+    display: flex; gap: 8px; margin-bottom: 1.5rem;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 6px;
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  .tab-btn {
+    flex: 1; padding: 0.6rem; border: none; background: transparent;
+    border-radius: 12px; font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem; font-weight: 700; cursor: pointer;
+    color: var(--text-muted); transition: all 0.25s;
+  }
+  .tab-btn.active {
+    background: linear-gradient(135deg, #FF6B9D, #C084FC);
+    color: white; box-shadow: 0 3px 10px rgba(255,107,157,0.35);
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  .card h2 {
+    font-size: 1rem; font-weight: 800;
+    color: var(--text); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .form-group { margin-bottom: 1rem; }
+  .form-group label {
+    display: block; font-size: 0.85rem; font-weight: 700;
+    color: var(--text-muted); margin-bottom: 0.4rem;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .form-group input[type="date"],
+  .form-group input[type="number"],
+  .form-group textarea {
+    width: 100%; padding: 0.65rem 1rem;
+    border: 1.5px solid var(--border); border-radius: 12px;
+    font-family: 'Nunito', sans-serif; font-size: 1rem;
+    color: var(--text); background: var(--bg);
+    outline: none; transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group textarea:focus {
+    border-color: var(--rosa);
+    background: white;
+  }
+  .form-group textarea { resize: vertical; min-height: 70px; }
+
+  .btn {
+    width: 100%; padding: 0.8rem;
+    background: linear-gradient(135deg, #FF6B9D, #C084FC);
+    color: white; border: none; border-radius: 14px;
+    font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(255,107,157,0.35);
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,157,0.45); }
+  .btn:active { transform: translateY(0); }
+  .btn.secondary {
+    background: white; color: var(--rosa);
+    border: 1.5px solid var(--rosa);
+    box-shadow: none;
+  }
+
+  .stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin-bottom: 1.2rem;
+  }
+  .stat-card {
+    background: var(--card); border-radius: 16px;
+    padding: 1rem; border: 1.5px solid var(--border);
+    box-shadow: var(--shadow); text-align: center;
+  }
+  .stat-icon { font-size: 1.8rem; display: block; margin-bottom: 0.3rem; }
+  .stat-num { font-size: 1.6rem; font-weight: 900; color: var(--text); }
+  .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+
+  .log-list { display: flex; flex-direction: column; gap: 10px; }
+  .log-item {
+    background: var(--bg); border-radius: 14px;
+    padding: 1rem 1.2rem; border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; transition: all 0.2s;
+  }
+  .log-item:hover { border-color: var(--rosa); background: white; }
+  .log-item-left { display: flex; align-items: center; gap: 12px; }
+  .log-emoji { display:flex; align-items:center; justify-content:center; width:50px; height:50px; }
+  .log-emoji img { width: 48px; height: 48px; object-fit: contain; }
+  .log-date { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; }
+  .log-stats { font-size: 0.85rem; color: var(--text); font-weight: 600; }
+  .log-note { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+  .log-actions { display: flex; gap: 6px; }
+  .btn-icon {
+    border: none; background: none; cursor: pointer;
+    font-size: 1.1rem; padding: 4px; border-radius: 8px;
+    transition: all 0.2s;
+  }
+  .btn-icon:hover { background: var(--rosa-light); }
+
+  .week-bar-wrap { margin-bottom: 0.5rem; }
+  .week-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 0.8rem; font-weight: 700; color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .week-bar-track {
+    height: 12px; background: var(--rosa-light);
+    border-radius: 20px; overflow: hidden;
+  }
+  .week-bar-fill {
+    height: 100%; border-radius: 20px;
+    background: linear-gradient(90deg, #FF6B9D, #C084FC);
+    transition: width 0.6s ease;
+  }
+
+  .week-selector {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-bottom: 1.2rem;
+    background: var(--card); padding: 0.8rem 1.2rem;
+    border-radius: 16px; border: 1.5px solid var(--border); box-shadow: var(--shadow);
+  }
+  .week-selector button {
+    border: none; background: var(--bg); border-radius: 10px;
+    padding: 0.4rem 0.8rem; font-size: 1.1rem; cursor: pointer;
+    border: 1.5px solid var(--border); transition: all 0.2s;
+  }
+  .week-selector button:hover { border-color: var(--rosa); }
+  .week-selector span { font-weight: 800; font-size: 0.9rem; color: var(--text); }
+
+  .empty-state {
+    text-align: center; padding: 2.5rem 1rem;
+    color: var(--text-muted);
+  }
+  .empty-state .emo { font-size: 3rem; display: block; margin-bottom: 0.5rem; }
+  .empty-state p { font-size: 0.95rem; font-weight: 600; }
+
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(61,26,46,0.45); z-index: 100;
+    align-items: center; justify-content: center; padding: 1rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card); border-radius: 24px;
+    padding: 1.5rem; width: 100%; max-width: 420px;
+    border: 2px solid var(--border); box-shadow: 0 20px 60px rgba(255,107,157,0.25);
+  }
+  .modal h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; }
+  .modal-btns { display: flex; gap: 10px; margin-top: 1rem; }
+  .modal-btns .btn { flex: 1; }
+
+  .toast {
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: linear-gradient(135deg, #FF6B9D, #C084FC);
+    color: white; padding: 0.75rem 1.5rem; border-radius: 40px;
+    font-weight: 800; font-size: 0.95rem; box-shadow: 0 8px 25px rgba(255,107,157,0.4);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 999; white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 800;
+  }
+  .badge-green { background: var(--verde-light); color: #065F46; }
+  .badge-red { background: var(--vermelho-light); color: #991B1B; }
+  .badge-yellow { background: #FEF3C7; color: #92400E; }
+  .badge-purple { background: #F3E8FF; color: #6B21A8; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📚 Diário de Estudos</h1>
+  <p id="header-sub">Acompanhe seu progresso com carinho 💕</p>
+</header>
+
+<div class="container">
+
+  <div class="mood-banner" id="moodBanner">
+    <span class="mood-emoji" id="moodEmoji"><img src="assets/emotions/neutra.png" alt="Mood"></span>
+    <div class="mood-message" id="moodMessage">Pronta para estudar?</div>
+    <div class="mood-sub" id="moodSub">Registre seu dia de estudos abaixo!</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('hoje')">📝 Hoje</button>
+    <button class="tab-btn" onclick="switchTab('semana')">📊 Semana</button>
+    <button class="tab-btn" onclick="switchTab('historico')">🗂️ Histórico</button>
+  </div>
+
+  <!-- TAB: HOJE -->
+  <div class="section active" id="tab-hoje">
+    <div class="card">
+      <h2>✍️ Registrar dia de estudos</h2>
+      <div class="form-group">
+        <label>Data</label>
+        <input type="date" id="inputData">
+      </div>
+      <div class="form-group">
+        <label>Questões feitas</label>
+        <input type="number" id="inputQuestoes" min="0" placeholder="Ex: 50" oninput="updateMoodPreview()">
+      </div>
+      <div class="form-group">
+        <label>Horas estudadas</label>
+        <input type="number" id="inputHoras" min="0" step="0.5" placeholder="Ex: 3.5" oninput="updateMoodPreview()">
+      </div>
+      <div class="form-group">
+        <label>Anotações do dia (opcional)</label>
+        <textarea id="inputNota" placeholder="Como foi o dia? O que estudou? 📖"></textarea>
+      </div>
+      <button class="btn" onclick="salvarDia()">💾 Salvar dia de estudos</button>
+    </div>
+
+    <div class="card" id="cardHoje" style="display:none">
+      <h2>📌 Registro de hoje</h2>
+      <div id="resumoHoje"></div>
+    </div>
+  </div>
+
+  <!-- TAB: SEMANA -->
+  <div class="section" id="tab-semana">
+    <div class="week-selector">
+      <button onclick="navSemana(-1)">◀</button>
+      <span id="semanaLabel">Semana atual</span>
+      <button onclick="navSemana(1)">▶</button>
+    </div>
+
+    <div class="stats-grid" id="weekStats">
+      <div class="stat-card">
+        <span class="stat-icon">✅</span>
+        <div class="stat-num" id="wTotalQ">0</div>
+        <div class="stat-label">Questões na semana</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">⏱️</span>
+        <div class="stat-num" id="wTotalH">0h</div>
+        <div class="stat-label">Horas na semana</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">📅</span>
+        <div class="stat-num" id="wDias">0/7</div>
+        <div class="stat-label">Dias estudados</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">⭐</span>
+        <div class="stat-num" id="wMedia">0</div>
+        <div class="stat-label">Média diária (q)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📈 Questões por dia</h2>
+      <div id="weekBars"></div>
+    </div>
+
+    <div class="card" style="text-align:center; padding: 1.2rem;">
+      <div id="weekMoodEmoji" style="display:block; margin-bottom:0.5rem; animation: bounce 2s infinite;"><img src="assets/emotions/neutra.png" alt="Mood" style="width:100px;height:100px;"></div>
+      <div id="weekMoodMsg" style="font-weight:800; font-size:1rem; color:var(--text);">Calculando...</div>
+    </div>
+  </div>
+
+  <!-- TAB: HISTÓRICO -->
+  <div class="section" id="tab-historico">
+    <div class="card">
+      <h2>🏆 Resumo geral</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-icon">📚</span>
+          <div class="stat-num" id="totalDias">0</div>
+          <div class="stat-label">Dias registrados</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">✅</span>
+          <div class="stat-num" id="totalQuestoes">0</div>
+          <div class="stat-label">Total de questões</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">⏱️</span>
+          <div class="stat-num" id="totalHoras">0h</div>
+          <div class="stat-label">Total de horas</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🔥</span>
+          <div class="stat-num" id="melhorDia">0</div>
+          <div class="stat-label">Melhor dia (q)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📋 Todos os registros</h2>
+      <div class="log-list" id="logList">
+        <div class="empty-state">
+          <span class="emo">📭</span>
+          <p>Nenhum registro ainda.<br>Comece registrando seu primeiro dia!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL EDIÇÃO -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3>✏️ Editar registro</h3>
+    <input type="hidden" id="editId">
+    <div class="form-group">
+      <label>Data</label>
+      <input type="date" id="editData">
+    </div>
+    <div class="form-group">
+      <label>Questões feitas</label>
+      <input type="number" id="editQuestoes" min="0">
+    </div>
+    <div class="form-group">
+      <label>Horas estudadas</label>
+      <input type="number" id="editHoras" min="0" step="0.5">
+    </div>
+    <div class="form-group">
+      <label>Anotações</label>
+      <textarea id="editNota"></textarea>
+    </div>
+    <div class="modal-btns">
+      <button class="btn secondary" onclick="fecharModal()">Cancelar</button>
+      <button class="btn" onclick="salvarEdicao()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'estudos_v1';
+
+function getData() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+function setData(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+
+function toISO(d) { return d.toISOString().split('T')[0]; }
+function todayISO() { return toISO(new Date()); }
+function formatDateBR(iso) {
+  const [y,m,d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+function dayName(iso) {
+  const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const d = new Date(iso + 'T12:00:00');
+  return days[d.getDay()];
+}
+
+function getMood(questoes) {
+  if (questoes === null || questoes === undefined) return { image:'assets/emotions/neutra.png', msg:'Nenhum registro ainda', sub:'Registre seu primeiro dia!', badge:'', emoji:'📚' };
+  if (questoes === 0)  return { image:'assets/emotions/chorando.png', msg:'Nenhuma questão hoje...', sub:'Vai ser mais forte amanhã! 💪', badge:'red', emoji:'😭' };
+  if (questoes < 10)   return { image:'assets/emotions/raiva.png', msg:'Só um pouquinho...', sub:'Dá pra mais, né? Bora! 💢', badge:'red', emoji:'😤' };
+  if (questoes < 25)   return { image:'assets/emotions/neutra.png', msg:'Razoável...', sub:'Pode melhorar! Você consegue! 🌟', badge:'yellow', emoji:'😐' };
+  if (questoes < 50)   return { image:'assets/emotions/neutra.png', msg:'Bom progresso!', sub:'Continuando assim vai longe! 📈', badge:'yellow', emoji:'🙂' };
+  if (questoes < 80)   return { image:'assets/emotions/feliz.png', msg:'Muito bom!', sub:'Você está indo super bem! 🎉', badge:'green', emoji:'😊' };
+  if (questoes < 120)  return { image:'assets/emotions/feliz.png', msg:'Incrível!!', sub:'Que dia produtivo!! Tô orgulhoso! 🏆', badge:'green', emoji:'🤩' };
+  return { image:'assets/emotions/orgulhosa.png', msg:'LENDÁRIA!!', sub:'Isso é praticamente sobre-humano!! 👑✨', badge:'purple', emoji:'🥳' };
+}
+
+function updateMoodPreview() {
+  const q = parseInt(document.getElementById('inputQuestoes').value) || 0;
+  const h = parseFloat(document.getElementById('inputHoras').value) || 0;
+  const mood = getMood(q > 0 || h > 0 ? q : null);
+  document.getElementById('moodEmoji').innerHTML = `<img src="${mood.image}" alt="Mood">`;
+  document.getElementById('moodMessage').textContent = mood.msg;
+  document.getElementById('moodSub').textContent = mood.sub;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+document.getElementById('inputData').value = todayISO();
+
+function salvarDia() {
+  const data = document.getElementById('inputData').value;
+  const questoes = parseInt(document.getElementById('inputQuestoes').value);
+  const horas = parseFloat(document.getElementById('inputHoras').value);
+  const nota = document.getElementById('inputNota').value.trim();
+  if (!data) { showToast('⚠️ Escolha uma data!'); return; }
+  if (isNaN(questoes) && isNaN(horas)) { showToast('⚠️ Preencha pelo menos questões ou horas!'); return; }
+  let arr = getData();
+  const existe = arr.findIndex(x => x.data === data);
+  const entry = { id: Date.now(), data, questoes: questoes || 0, horas: horas || 0, nota };
+  if (existe >= 0) {
+    if (!confirm('Já existe um registro para essa data. Quer substituir?')) return;
+    entry.id = arr[existe].id;
+    arr[existe] = entry;
+  } else {
+    arr.push(entry);
+  }
+  arr.sort((a,b) => b.data.localeCompare(a.data));
+  setData(arr);
+  document.getElementById('inputQuestoes').value = '';
+  document.getElementById('inputHoras').value = '';
+  document.getElementById('inputNota').value = '';
+  showToast('✅ Dia salvo com sucesso!');
+  renderAll();
+  updateMoodPreview();
+}
+
+let semanaOffset = 0;
+
+function getWeekRange(offset) {
+  const today = new Date();
+  const day = today.getDay();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - ((day + 6) % 7) + offset * 7);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  return { start: toISO(monday), end: toISO(sunday), monday, sunday };
+}
+
+function navSemana(dir) { semanaOffset += dir; renderSemana(); }
+
+function renderSemana() {
+  const { start, end, monday, sunday } = getWeekRange(semanaOffset);
+  const arr = getData().filter(x => x.data >= start && x.data <= end);
+  const label = semanaOffset === 0 ? 'Semana atual' :
+    `${formatDateBR(start)} — ${formatDateBR(end)}`;
+  document.getElementById('semanaLabel').textContent = label;
+
+  const totalQ = arr.reduce((a,b) => a + b.questoes, 0);
+  const totalH = arr.reduce((a,b) => a + b.horas, 0);
+  const dias = arr.filter(x => x.questoes > 0 || x.horas > 0).length;
+  const media = dias > 0 ? Math.round(totalQ / dias) : 0;
+  document.getElementById('wTotalQ').textContent = totalQ;
+  document.getElementById('wTotalH').textContent = totalH.toFixed(1) + 'h';
+  document.getElementById('wDias').textContent = dias + '/7';
+  document.getElementById('wMedia').textContent = media;
+
+  const maxQ = Math.max(...arr.map(x => x.questoes), 1);
+  let barsHTML = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const iso = toISO(d);
+    const reg = arr.find(x => x.data === iso);
+    const q = reg ? reg.questoes : 0;
+    const pct = Math.round((q / maxQ) * 100);
+    const dn = dayName(iso);
+    const isToday = iso === todayISO();
+    barsHTML += `<div class="week-bar-wrap">
+      <div class="week-bar-label">
+        <span style="font-weight:${isToday?'900':'700'};color:${isToday?'var(--rosa)':'var(--text-muted)'}">${dn} ${isToday?'(hoje)':''}</span>
+        <span style="color:var(--text)">${q > 0 ? q + ' q' : reg ? '0 q' : '—'} ${reg && reg.horas > 0 ? '· ' + reg.horas + 'h' : ''}</span>
+      </div>
+      <div class="week-bar-track"><div class="week-bar-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }
+  document.getElementById('weekBars').innerHTML = barsHTML;
+
+  const mood = getMood(totalQ > 0 ? Math.round(totalQ / 7) : (dias > 0 ? 0 : null));
+  document.getElementById('weekMoodEmoji').innerHTML = `<img src="${mood.image}" alt="Mood" style="width:100px;height:100px;">`;
+  const wMsg = totalQ === 0 && dias === 0
+    ? 'Nenhum estudo registrado nessa semana'
+    : `Total da semana: ${totalQ} questões e ${totalH.toFixed(1)}h estudadas`;
+  document.getElementById('weekMoodMsg').textContent = wMsg;
+}
+
+function renderHistorico() {
+  const arr = getData();
+  document.getElementById('totalDias').textContent = arr.length;
+  const tQ = arr.reduce((a,b) => a+b.questoes, 0);
+  const tH = arr.reduce((a,b) => a+b.horas, 0);
+  const best = arr.reduce((a,b) => Math.max(a, b.questoes), 0);
+  document.getElementById('totalQuestoes').textContent = tQ;
+  document.getElementById('totalHoras').textContent = tH.toFixed(1) + 'h';
+  document.getElementById('melhorDia').textContent = best;
+
+  const list = document.getElementById('logList');
+  if (arr.length === 0) {
+    list.innerHTML = `<div class="empty-state"><span class="emo">📭</span><p>Nenhum registro ainda.<br>Comece registrando seu primeiro dia!</p></div>`;
+    return;
+  }
+  list.innerHTML = arr.map(x => {
+    const mood = getMood(x.questoes);
+    return `<div class="log-item">
+      <div class="log-item-left">
+        <span class="log-emoji"><img src="${mood.image}" alt="Mood"></span>
+        <div>
+          <div class="log-date">${dayName(x.data)}, ${formatDateBR(x.data)}</div>
+          <div class="log-stats">${x.questoes} questões · ${x.horas}h estudadas</div>
+          ${x.nota ? `<div class="log-note">${x.nota}</div>` : ''}
+        </div>
+      </div>
+      <div class="log-actions">
+        <button class="btn-icon" title="Editar" onclick="abrirModal('${x.id}')">✏️</button>
+        <button class="btn-icon" title="Apagar" onclick="deletar('${x.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderHoje() {
+  const arr = getData();
+  const today = todayISO();
+  const reg = arr.find(x => x.data === today);
+  const card = document.getElementById('cardHoje');
+  if (reg) {
+    card.style.display = 'block';
+    const mood = getMood(reg.questoes);
+    document.getElementById('resumoHoje').innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:0.8rem">
+        <img src="${mood.image}" alt="Mood" style="width:80px;height:80px;">
+        <div>
+          <div style="font-weight:800;font-size:1rem">${mood.msg}</div>
+          <div style="font-size:0.85rem;color:var(--text-muted)">${mood.sub}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <span class="badge badge-green">✅ ${reg.questoes} questões</span>
+        <span class="badge badge-purple">⏱️ ${reg.horas}h estudadas</span>
+        ${reg.nota ? `<span class="badge badge-yellow">📝 Tem nota</span>` : ''}
+      </div>
+      ${reg.nota ? `<div style="margin-top:0.8rem;font-size:0.88rem;color:var(--text-muted);padding:0.7rem;background:var(--bg);border-radius:10px">${reg.nota}</div>` : ''}
+    `;
+    document.getElementById('moodEmoji').innerHTML = `<img src="${mood.image}" alt="Mood">`;
+    document.getElementById('moodMessage').textContent = mood.msg;
+    document.getElementById('moodSub').textContent = mood.sub;
+  } else {
+    card.style.display = 'none';
+  }
+}
+
+function renderAll() { renderHoje(); renderSemana(); renderHistorico(); }
+
+function switchTab(tab) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+  renderAll();
+}
+
+function abrirModal(id) {
+  const arr = getData();
+  const reg = arr.find(x => String(x.id) === String(id));
+  if (!reg) return;
+  document.getElementById('editId').value = reg.id;
+  document.getElementById('editData').value = reg.data;
+  document.getElementById('editQuestoes').value = reg.questoes;
+  document.getElementById('editHoras').value = reg.horas;
+  document.getElementById('editNota').value = reg.nota || '';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function fecharModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+function salvarEdicao() {
+  const id = document.getElementById('editId').value;
+  const arr = getData();
+  const i = arr.findIndex(x => String(x.id) === String(id));
+  if (i < 0) return;
+  arr[i].data = document.getElementById('editData').value;
+  arr[i].questoes = parseInt(document.getElementById('editQuestoes').value) || 0;
+  arr[i].horas = parseFloat(document.getElementById('editHoras').value) || 0;
+  arr[i].nota = document.getElementById('editNota').value.trim();
+  arr.sort((a,b) => b.data.localeCompare(a.data));
+  setData(arr);
+  fecharModal();
+  showToast('✏️ Registro atualizado!');
+  renderAll();
+}
+
+function deletar(id) {
+  if (!confirm('Tem certeza que quer apagar esse registro?')) return;
+  let arr = getData();
+  arr = arr.filter(x => String(x.id) !== String(id));
+  setData(arr);
+  showToast('🗑️ Registro apagado!');
+  renderAll();
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) fecharModal();
+});
+
+renderAll();
+</script>
+</body>
+</html>
