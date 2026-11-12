@@ -2,7 +2,7 @@
 
 Aplicação web para registrar o dia de estudos (questões feitas, horas e anotações) e acompanhar a evolução pela semana. Uma personagem chibi reage ao desempenho de cada dia.
 
-**Demo:** _adicione aqui o link depois de publicar (Netlify ou GitHub Pages)_
+**Demo:** _https://chibigi.netlify.app/_
 
 | Hoje | Semana | Histórico |
 |---|---|---|
